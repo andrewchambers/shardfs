@@ -22,7 +22,7 @@ Create /etc/shardfs-mounts to specify our mounts.
 
 1 20GiB tcp 10.100.0.2:1234 shard1 live
 2 40GiB tcp 10.100.0.3:1234 shard2 live
-3 20GiB tcp 10.100.0.4:1234 shard3 dead
+3 20GiB tcp 10.100.0.4:1234 shard3 drain
 ```
 
 Start the server:
@@ -42,7 +42,7 @@ sudo mount -t 9p -n 127.0.0.1 /shardfs \
 
 You must perform a rebalance when adding nodes, removing nodes, or changing node relative sizes:
 
-First make your changes to the shardfs-mounts, including marking nodes you no longer want as 'dead'.
+First make your changes to the shardfs-mounts, including marking nodes you no longer want as 'drain'.
 Next to copy files to their new nodes, run the rebalance command...
 
 ```
@@ -50,5 +50,5 @@ $ umount /shardfs
 $ shardfs rebalance
 ```
 
-Once the files are rebalanced, you may remove any dead nodes from the config. To avoid data loss, you must finish the 
+Once the files are rebalanced, you may remove any drained nodes from the config. To avoid data loss, you must finish the 
 rebalance operation before remounting the filesystem.
