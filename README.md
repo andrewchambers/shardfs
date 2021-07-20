@@ -8,6 +8,7 @@ and is weighted to targets by relative sizes.
 
 - The top level directory does not support renaming files.
 - Hard links are not supported.
+- Directories are distributed by path hash and do not understand free space.
 - The code does not exist yet.
 
 # Basic usage
@@ -17,10 +18,10 @@ First setup a [diod](https://github.com/chaos/diod) export on each server you ar
 Create /etc/shardfs-mounts to specify our mounts.
 ```
 # Lines have the format:
-# node-id size transport address export status
+# node-id weight transport address export status
 
 1 20GiB tcp 10.100.0.2:1234 shard1 live
-2 20GiB tcp 10.100.0.3:1234 shard2 live
+2 40GiB tcp 10.100.0.3:1234 shard2 live
 3 20GiB tcp 10.100.0.4:1234 shard3 dead
 ```
 
@@ -39,7 +40,7 @@ sudo mount -t 9p -n 127.0.0.1 /shardfs \
 
 # Rebalancing a cluster
 
-Adding nodes, removing nodes, or changing relative weights:
+You must perform a rebalance when adding nodes, removing nodes, or changing node relative sizes:
 
 First make your changes to the shardfs-mounts, including marking nodes you no longer want as 'dead'.
 Next to copy files to their new nodes, run the rebalance command...
@@ -50,4 +51,4 @@ $ shardfs rebalance
 ```
 
 Once the files are rebalanced, you may remove any dead nodes from the config. To avoid data loss, you must finish the 
-rebalance operation before remounting the drive.
+rebalance operation before remounting the filesystem.
